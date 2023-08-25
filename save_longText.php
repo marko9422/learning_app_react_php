@@ -15,12 +15,13 @@ switch ($method) {
 
         if ($data !== null) {
             // Assuming 'text_data' is the name of the column in your table.
-            $sql = "INSERT INTO german_grammar (text_data) VALUES (:textData)";
+            $sql = "INSERT INTO german_grammar (text_data,question) VALUES (:textData,:question)";
             
             $stmt = $conn->prepare($sql);
 
             // Bind the parameter
             $stmt->bindParam(':textData', $data->text_data);
+            $stmt->bindParam(':question', $data->question);
 
             if ($stmt->execute()) {
                 // Data was successfully inserted
