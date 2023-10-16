@@ -14,7 +14,7 @@ switch($method) {
 
     case 'GET':
 
-        $sql = "SELECT * FROM german_english_shorttext";
+        $sql = "SELECT * FROM categories";
         $path = explode('/', $_SERVER['REQUEST_URI'] ); 
 
         if (isset($path[3]) && is_numeric($path[3])) {
@@ -36,14 +36,18 @@ switch($method) {
     case 'POST':
 
         $user = json_decode(file_get_contents('php://input'));
-        $sql = "INSERT INTO german_english_shorttext (german,english,english_score,german_score,categoryInput) 
-        VALUES(:germanShortText,:englishShortText,10000,10000,:radio)";
+
+        $sqlUpdate = "UPDATE categories SET checked = 0";
+        $stmtUpdate = $conn->prepare($sqlUpdate);
+        $stmtUpdate->execute();
+
+        $sql = "INSERT INTO categories (categoryValue,checked) 
+        VALUES(:categoryValue,1)";
 
         $stmt = $conn->prepare($sql);
 
-        $stmt->bindParam(':germanShortText', $user->germanShortText);
-        $stmt->bindParam(':englishShortText', $user->englishShortText);
-        $stmt->bindParam(':radio', $user->radio);
+        $stmt->bindParam(':categoryValue', $user->categoryValue);
+
         if($stmt->execute()) {
             $response = ['status' => 1, 'message' => 'Record created successfully.'];
         } else {
@@ -54,4 +58,3 @@ switch($method) {
         break;
 
 }
-
